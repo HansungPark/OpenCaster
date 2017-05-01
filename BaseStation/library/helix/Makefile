@@ -31,21 +31,26 @@ endif
 CFLAGS += -ffreestanding -nostdlib
 CFLAGS += -Ireal -Ipub
 
+LDFLAGS += -shared
+
 SRCS = mp3dec.c mp3tabs.c bitstream.c buffers.c dct32.c dequant.c dqchan.c
 SRCS += huffman.c hufftabs.c imdct.c polyphase.c scalfact.c
 SRCS += stproc.c subband.c trigtabs_fixpt.c
 
 OBJS = $(SRCS:.c=.o)
 
-.PHONY: libhelix.a
+.PHONY: libhelix.a libhelix.so
 
-all: libhelix.a
+all: libhelix.a libhelix.so
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 libhelix.a: $(OBJS)
 	$(AR) -r $@ $(OBJS)
+
+libhelix.so: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 clean:
 	rm -f $(OBJS) libhelix.a
